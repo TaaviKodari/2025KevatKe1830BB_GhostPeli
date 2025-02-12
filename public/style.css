@@ -1,0 +1,69 @@
+body{
+    font-family: 'Roboto',Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #373434;
+}
+
+#intro-screen{
+  background-image: url('images/background.png');
+  background-repeat: repeat-y;
+  background-size: 900px auto; 
+  background-position: center;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+ 
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+h2,h1,p{
+    text-align: center;
+    width: 100%;
+    position: relative;
+    margin: 20px 0px;
+}
+
+h3{
+    margin: 10px 10px;
+}
+
+button{
+    background-color: black;
+    color:white;
+    margin-left: 20px;
+    align-self: flex-start;
+    padding: 20px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#game-screen{
+    display: none;
+}
+
+#game-board{
+    display: grid;
+    gap: 0px;
+    background-image: url('images/background.png');
+    background-size: cover;
+    background-position: center;
+    width: 50vw;
+    height: 50vw;
+    margin: 10px auto;
+    border:2px solid #333;
+    padding: 0;
+    background-color: rgba(221,221,221,0.8);
+}
