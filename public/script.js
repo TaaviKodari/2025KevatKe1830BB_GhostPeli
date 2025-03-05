@@ -1,4 +1,4 @@
-const BOARD_SIZE =  15;
+const BOARD_SIZE =  20;
 const cellSize = calculateCellSize();
 let board;
 
@@ -22,6 +22,9 @@ function generateRandomBoard(){
             }
         }
     }
+
+    generateObstacles(newBoard);
+
     console.log(newBoard);
     return newBoard;
 }
@@ -55,4 +58,34 @@ function calculateCellSize(){
     const gameBoardSize = 0.95 * screenSize;
 
     return gameBoardSize/ BOARD_SIZE;
+}
+
+function generateObstacles(board){
+
+    const obstacles = [
+        [[0,0],[0,1],[1,0],[1,1]],//Neliö
+        [[0,0],[0,1],[0,2],[0,3]],//I
+        [[0,0],[1,0],[2,0],[1,1]], //T
+        [[1,0],[2,0],[1,1],[0,2],[1,2]],//Z
+    ];
+
+    const positions =[
+        {startX: 2, startY: 2},
+        {startX: 8, startY: 2},
+        {startX: 4, startY: 8},
+        
+    ];
+
+    positions.forEach(pos =>{
+        const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
+        placeObstacle(board,randomObstacle,pos.startX,pos.startY);
+    });
+
+}
+
+function placeObstacle(board,obstacle,startX,startY){
+    for(coordinatePair of obstacle){
+        [x, y] = coordinatePair;
+        board[startY + y][startX + x] = 'W';
+    }
 }
