@@ -2,6 +2,7 @@ const BOARD_SIZE =  20;
 const cellSize = calculateCellSize();
 let board;
 let player;
+let ghosts = [];
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 
@@ -34,6 +35,7 @@ function startGame(){
 }
 
 function generateRandomBoard(){
+    //Luodaan pelilauta
     const newBoard = Array.from({length:BOARD_SIZE}, ()=> Array(BOARD_SIZE).fill(' '));
     for(let y = 0; y < BOARD_SIZE; y++){
         for(let x = 0; x < BOARD_SIZE; x++){
@@ -42,13 +44,21 @@ function generateRandomBoard(){
             }
         }
     }
-
+    //luodaan esteet
     generateObstacles(newBoard);
-
+    
+    //luodaan pelajaa
     const [playerX, playerY] = randomEmptyPosition(newBoard);
     setCell(newBoard,playerX,playerY,'P');
     player.x = playerX;
     player.y = playerY;
+
+    //Luodaan haamut
+    for(let i = 0; i < 5; i++){
+        const[ghostX, ghostY] = randomEmptyPosition(newBoard);
+        setCell(newBoard,ghostX, ghostY, 'G');
+        ghosts.push(new Ghost(ghostX, ghostY));
+    }
 
     console.log(newBoard);
     return newBoard;
@@ -58,6 +68,7 @@ function drawBoard(board){
     const gameBoard = document.getElementById('game-board');
 
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE},1fr)`;
+    gameBoard.innerHTML = "";
 
     for(let y = 0; y < BOARD_SIZE; y++){
         for(let x = 0; x < BOARD_SIZE; x++){
@@ -69,6 +80,8 @@ function drawBoard(board){
                 cell.classList.add('wall');
             }else if(getCell(board,x,y) === 'P'){
                 cell.classList.add('player');
+            }else if(getCell(board,x,y) === 'G'){
+                cell.classList.add('ghost');
             }
 
             gameBoard.appendChild(cell);
@@ -138,6 +151,11 @@ function setCell(board,x,y,value){
     board[y][x] = value;
 }
 
+function shootAt(x,y){
+    setCell(board,x,y,'B');
+    drawBoard(board);
+}
+
 class Player{
     constructor(x,y){
         this.x = x;
@@ -150,11 +168,20 @@ class Player{
 
         const newX = currentX + deltaX;
         const newY = currentY + deltaY;
+        if(getCell(board, newX, newY) === ' '){
+            player.x = newX;
+            player.y = newY;
+    
+            setCell(board,currentX, currentY,' ');
+            setCell(board,newX, newY,'P');
+            drawBoard(board);
+        }
+    }
+}
 
-        player.x = newX;
-        player.y = newY;
-
-        setCell(board,newX, newY,'P');
-        drawBoard(board);
+class Ghost{
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
     }
 }
