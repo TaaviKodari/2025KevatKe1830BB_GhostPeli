@@ -1,14 +1,34 @@
 const BOARD_SIZE =  20;
 const cellSize = calculateCellSize();
 let board;
-
+let player;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
+
+document.addEventListener('keydown', (event)=>{
+    switch(event.key){
+        case 'ArrowUp':
+            player.move(0,-1);
+        break;
+        case 'ArrowDown':
+            player.move(0,1);
+        break;
+        case 'ArrowLeft':
+            player.move(-1,0);    
+        break;
+        case 'ArrowRight':
+            player.move(1,0);
+        break;
+    }
+    event.preventDefault();
+});
+
 
 function startGame(){
     //console.log('Klikattu');
     document.getElementById('intro-screen').style.display ='none';
     document.getElementById('game-screen').style.display = 'block';
+    player = new Player(0,0);
     board = generateRandomBoard();
     drawBoard(board);
 }
@@ -24,6 +44,11 @@ function generateRandomBoard(){
     }
 
     generateObstacles(newBoard);
+
+    const [playerX, playerY] = randomEmptyPosition(newBoard);
+    setCell(newBoard,playerX,playerY,'P');
+    player.x = playerX;
+    player.y = playerY;
 
     console.log(newBoard);
     return newBoard;
@@ -42,6 +67,8 @@ function drawBoard(board){
             cell.style.height = cellSize + "px";
             if(getCell(board,x,y) === 'W'){
                 cell.classList.add('wall');
+            }else if(getCell(board,x,y) === 'P'){
+                cell.classList.add('player');
             }
 
             gameBoard.appendChild(cell);
@@ -73,6 +100,8 @@ function generateObstacles(board){
         {startX: 2, startY: 2},
         {startX: 8, startY: 2},
         {startX: 4, startY: 8},
+        {startX: 3, startY: 16},
+        {startX: 10, startY: 10},
         
     ];
 
@@ -87,5 +116,45 @@ function placeObstacle(board,obstacle,startX,startY){
     for(coordinatePair of obstacle){
         [x, y] = coordinatePair;
         board[startY + y][startX + x] = 'W';
+    }
+}
+
+function randomInt(min,max){
+    return Math.floor(Math.random() * (max - min +1)) +min;
+}
+
+function randomEmptyPosition(board){
+    x = randomInt(1,BOARD_SIZE - 2);
+    y = randomInt(1,BOARD_SIZE - 2);
+    if(getCell(board,x,y) === ' '){
+        return[x,y];
+    }
+    else{
+       return randomEmptyPosition(board);
+    }
+}
+
+function setCell(board,x,y,value){
+    board[y][x] = value;
+}
+
+class Player{
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
+    }
+
+    move(deltaX,deltaY){
+        const currentX = player.x;
+        const currentY = player.y;
+
+        const newX = currentX + deltaX;
+        const newY = currentY + deltaY;
+
+        player.x = newX;
+        player.y = newY;
+
+        setCell(board,newX, newY,'P');
+        drawBoard(board);
     }
 }
