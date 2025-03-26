@@ -11,14 +11,21 @@ document.addEventListener('keydown', (event)=>{
         case 'ArrowUp':
             player.move(0,-1);
         break;
+        
         case 'ArrowDown':
             player.move(0,1);
         break;
+        
         case 'ArrowLeft':
             player.move(-1,0);    
         break;
+        
         case 'ArrowRight':
             player.move(1,0);
+        break;
+
+        case 'w':
+            shootAt(player.x, player.y - 1);
         break;
     }
     event.preventDefault();
@@ -82,6 +89,8 @@ function drawBoard(board){
                 cell.classList.add('player');
             }else if(getCell(board,x,y) === 'G'){
                 cell.classList.add('ghost');
+            }else if(getCell(board,x,y) === 'B'){
+                cell.classList.add('bullet');
             }
 
             gameBoard.appendChild(cell);
