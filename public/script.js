@@ -27,6 +27,18 @@ document.addEventListener('keydown', (event)=>{
         case 'w':
             shootAt(player.x, player.y - 1);
         break;
+
+        case 's':
+            shootAt(player.x, player.y + 1);
+        break;
+
+        case 'a':
+            shootAt(player.x - 1, player.y);
+        break;
+
+        case 'd':
+            shootAt(player.x + 1 , player.y);
+        break;
     }
     event.preventDefault();
 });
@@ -91,6 +103,9 @@ function drawBoard(board){
                 cell.classList.add('ghost');
             }else if(getCell(board,x,y) === 'B'){
                 cell.classList.add('bullet');
+                setTimeout(()=>{
+                    setCell(board,x,y,' ');
+                }, 500);
             }
 
             gameBoard.appendChild(cell);
@@ -161,8 +176,22 @@ function setCell(board,x,y,value){
 }
 
 function shootAt(x,y){
+    if(getCell(board,x,y) === 'W'){
+        return;
+    }
+
+    const ghostIndex = ghosts.findIndex(ghost => ghost.x === x && ghost.y === y);
+
+    if(ghostIndex !== -1){
+        ghosts.splice(ghostIndex,1);
+    }
+
     setCell(board,x,y,'B');
     drawBoard(board);
+
+    if(ghosts.length === 0){
+        alert('Kaikki ammuttu');
+    }
 }
 
 class Player{
@@ -192,5 +221,22 @@ class Ghost{
     constructor(x,y){
         this.x = x;
         this.y = y;
+    }
+
+    moveGhostTowardsPlayer(player,board){
+        
+        //määritellään missä päin pelaaja on vihollisesta
+        let dx = player.x - this.x;
+        let dy = player.y - this.y;
+
+        //tallennetaan mahdolliset liikkeet
+        let moves = [];
+
+        if(Math.abs(dx) > Math.abs(dy)){
+            if(dx > 0) moves.push({x: this.x + 1, y: this.y}); //Liikutaan oikealle
+            else moves.push({x: this.x - 1, y: this.y }); //liikutaan vasemmalle
+            
+        }
+
     }
 }
