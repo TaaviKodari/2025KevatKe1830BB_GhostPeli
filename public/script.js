@@ -3,6 +3,7 @@ const cellSize = calculateCellSize();
 let board;
 let player;
 let ghosts = [];
+let ghostSpeed = 1000;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 
@@ -51,6 +52,7 @@ function startGame(){
     player = new Player(0,0);
     board = generateRandomBoard();
     drawBoard(board);
+    setInterval(moveGhosts,ghostSpeed);
 }
 
 function generateRandomBoard(){
@@ -194,6 +196,19 @@ function shootAt(x,y){
     }
 }
 
+function moveGhosts(){
+    
+    ghosts.forEach(ghost =>{
+        const newPosition = ghost.moveGhostTowardsPlayer(player,board);
+        ghost.x = newPosition.x;
+        ghost.y = newPosition.y;
+
+        setCell(board,ghost.x, ghost.y,'G');
+
+        drawBoard(board);
+    });
+}
+
 class Player{
     constructor(x,y){
         this.x = x;
@@ -236,7 +251,23 @@ class Ghost{
             if(dx > 0) moves.push({x: this.x + 1, y: this.y}); //Liikutaan oikealle
             else moves.push({x: this.x - 1, y: this.y }); //liikutaan vasemmalle
             
+            if(dy > 0) moves.push({x:this.x, y:this.y +1}) //liikutaan alas
+            else moves.push({x:this.x, y:this.y -1})//liikutaan ylös
+        }
+        else{
+            if(dy > 0) moves.push({x:this.x, y:this.y +1}) //liikutaan alas
+            else moves.push({x:this.x, y:this.y -1})//liikutaan ylös
+
+            if(dx > 0) moves.push({x: this.x + 1, y: this.y}); //Liikutaan oikealle
+            else moves.push({x: this.x - 1, y: this.y }); //liikutaan vasemmalle
         }
 
+        for(let move of moves){
+            const value = getCell(board,move.x, move.y);
+            if(value === ' ' || value === 'P'){
+                return move;
+            }
+        }
+        return{x:this.x, y:this.y};
     }
 }
