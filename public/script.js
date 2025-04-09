@@ -4,10 +4,15 @@ let board;
 let player;
 let ghosts = [];
 let ghostSpeed = 1000;
+let isGameRunning = false;
+let ghostInterval;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 
 document.addEventListener('keydown', (event)=>{
+    if(isGameRunning === false){
+        return;
+    }
     switch(event.key){
         case 'ArrowUp':
             player.move(0,-1);
@@ -52,7 +57,8 @@ function startGame(){
     player = new Player(0,0);
     board = generateRandomBoard();
     drawBoard(board);
-    setInterval(moveGhosts,ghostSpeed);
+    ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    isGameRunning = true;
 }
 
 function generateRandomBoard(){
@@ -207,16 +213,27 @@ function moveGhosts(){
         setCell(board,ghost.x, ghost.y,'G');
         
         oldGhosts.forEach(ghost =>{
-            console.log(ghost);
-            setCell(ghost.x,ghost.y,' ');
+            setCell(board,ghost.x, ghost.y,' ');
         });
 
         ghosts.forEach(ghost =>{
             setCell(board,ghost.x, ghost.y,'G');
         })
-
+        
         drawBoard(board);
+        
+        if(ghost.x === player.x && ghost.y === player.y){
+            endGame();
+            return;
+        }
     });
+}
+
+function endGame(){
+    isGameRunning = false;
+    clearInterval(ghostInterval);
+    alert('Game Over! The ghost caught you!');
+
 }
 
 class Player{
@@ -275,8 +292,7 @@ class Ghost{
         for(let move of moves){
             const value = getCell(board,move.x, move.y);
             if(value === ' ' || value === 'P' && 
-                
-            ){
+                !oldGhosts.some(g => g.x === move.x && g.y === move.y)){
                 return move;
             }
         }
