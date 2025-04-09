@@ -197,13 +197,23 @@ function shootAt(x,y){
 }
 
 function moveGhosts(){
-    
+    const oldGhosts = ghosts.map(ghost=>({x:ghost.x, y:ghost.y}));
+
     ghosts.forEach(ghost =>{
-        const newPosition = ghost.moveGhostTowardsPlayer(player,board);
+        const newPosition = ghost.moveGhostTowardsPlayer(player,board, oldGhosts);
         ghost.x = newPosition.x;
         ghost.y = newPosition.y;
 
         setCell(board,ghost.x, ghost.y,'G');
+        
+        oldGhosts.forEach(ghost =>{
+            console.log(ghost);
+            setCell(ghost.x,ghost.y,' ');
+        });
+
+        ghosts.forEach(ghost =>{
+            setCell(board,ghost.x, ghost.y,'G');
+        })
 
         drawBoard(board);
     });
@@ -238,7 +248,7 @@ class Ghost{
         this.y = y;
     }
 
-    moveGhostTowardsPlayer(player,board){
+    moveGhostTowardsPlayer(player,board,oldGhosts){
         
         //määritellään missä päin pelaaja on vihollisesta
         let dx = player.x - this.x;
@@ -264,7 +274,9 @@ class Ghost{
 
         for(let move of moves){
             const value = getCell(board,move.x, move.y);
-            if(value === ' ' || value === 'P'){
+            if(value === ' ' || value === 'P' && 
+                
+            ){
                 return move;
             }
         }
