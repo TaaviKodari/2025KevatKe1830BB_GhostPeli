@@ -7,6 +7,8 @@ let ghostSpeed = 1000;
 let isGameRunning = false;
 let ghostInterval;
 
+let score = 0;
+
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 
 document.addEventListener('keydown', (event)=>{
@@ -57,8 +59,12 @@ function startGame(){
     player = new Player(0,0);
     board = generateRandomBoard();
     drawBoard(board);
-    ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    setTimeout(()=>{
+        ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    }, 1000);
     isGameRunning = true;
+    score = 0;
+    updateScoreBoard(0);
 }
 
 function generateRandomBoard(){
@@ -80,6 +86,7 @@ function generateRandomBoard(){
     player.x = playerX;
     player.y = playerY;
 
+    ghosts = [];
     //Luodaan haamut
     for(let i = 0; i < 5; i++){
         const[ghostX, ghostY] = randomEmptyPosition(newBoard);
@@ -192,6 +199,7 @@ function shootAt(x,y){
 
     if(ghostIndex !== -1){
         ghosts.splice(ghostIndex,1);
+        updateScoreBoard(50);
     }
 
     setCell(board,x,y,'B');
@@ -230,10 +238,24 @@ function moveGhosts(){
 }
 
 function endGame(){
-    isGameRunning = false;
+    if(isGameRunning){
+        alert('Game Over! The ghost caught you!');    
+    }
+    isGameRunning = false;  
     clearInterval(ghostInterval);
-    alert('Game Over! The ghost caught you!');
+    document.getElementById('intro-screen').style.display = 'block';
+    document.getElementById('game-screen').style.display = 'none';
+}
 
+function updateScoreBoard(points){
+    const scoreBoard = document.getElementById('score-board');
+    score += points;
+
+    scoreBoard.textContent = `Score: ${score}`;
+}
+
+function startNextLevel(){
+    
 }
 
 class Player{
