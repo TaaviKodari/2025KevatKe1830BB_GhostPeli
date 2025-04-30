@@ -3,10 +3,11 @@ const cellSize = calculateCellSize();
 let board;
 let player;
 let ghosts = [];
-let ghostSpeed = 1000;
+let ghostSpeed;
+let ghostStartSpeed = 1000;
 let isGameRunning = false;
 let ghostInterval;
-
+let ghostCount = 5;
 let score = 0;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
@@ -57,8 +58,10 @@ function startGame(){
     document.getElementById('intro-screen').style.display ='none';
     document.getElementById('game-screen').style.display = 'block';
     player = new Player(0,0);
+    ghostCount = 1;
     board = generateRandomBoard();
     drawBoard(board);
+    ghostSpeed = ghostStartSpeed;
     setTimeout(()=>{
         ghostInterval = setInterval(moveGhosts,ghostSpeed);
     }, 1000);
@@ -88,7 +91,7 @@ function generateRandomBoard(){
 
     ghosts = [];
     //Luodaan haamut
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < ghostCount; i++){
         const[ghostX, ghostY] = randomEmptyPosition(newBoard);
         setCell(newBoard,ghostX, ghostY, 'G');
         ghosts.push(new Ghost(ghostX, ghostY));
@@ -146,6 +149,9 @@ function generateObstacles(board){
         [[0,0],[0,1],[0,2],[0,3]],//I
         [[0,0],[1,0],[2,0],[1,1]], //T
         [[1,0],[2,0],[1,1],[0,2],[1,2]],//Z
+        [[1,0],[2,0],[0,1],[1,1]],//S
+        [[0,0],[1,0],[1,1],[1,2]],//L
+        [[0,2],[0,1],[1,1],[2,1]]//J
     ];
 
     const positions =[
@@ -154,6 +160,10 @@ function generateObstacles(board){
         {startX: 4, startY: 8},
         {startX: 3, startY: 16},
         {startX: 10, startY: 10},
+        {startX: 12, startY: 5},
+        {startX: 12, startY: 10},
+        {startX: 16, startY: 10},
+        {startX: 13, startY: 14}
         
     ];
 
@@ -204,9 +214,9 @@ function shootAt(x,y){
 
     setCell(board,x,y,'B');
     drawBoard(board);
-
     if(ghosts.length === 0){
-        alert('Kaikki ammuttu');
+        //alert('Kaikki ammuttu');
+        startNextLevel();
     }
 }
 
@@ -255,7 +265,16 @@ function updateScoreBoard(points){
 }
 
 function startNextLevel(){
-    
+    alert('Next level!');
+    ghostCount++;
+    board = generateRandomBoard();
+    drawBoard(board);
+
+    ghostSpeed = ghostSpeed * 0.9;
+    clearInterval(ghostInterval);
+    setTimeout(()=>{
+        ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    },1000);
 }
 
 class Player{
