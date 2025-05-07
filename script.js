@@ -1,3 +1,15 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyB0fA-dNX5cBYKVEjXOuFW2Gzsvh6qvbYg",
+    authDomain: "kevatke1830haamupeli.firebaseapp.com",
+    projectId: "kevatke1830haamupeli",
+    storageBucket: "kevatke1830haamupeli.firebasestorage.app",
+    messagingSenderId: "173716897335",
+    appId: "1:173716897335:web:210927c7716b4ea0c189b2"
+  };
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 const BOARD_SIZE =  20;
 const cellSize = calculateCellSize();
 let board;
