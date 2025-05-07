@@ -23,6 +23,9 @@ let ghostCount = 5;
 let score = 0;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
+document.getElementById('save-score-btn').addEventListener('click',saveScore);
+document.getElementById('exit-btn').addEventListener('click',exitGame);
+
 
 document.addEventListener('keydown', (event)=>{
     if(isGameRunning === false){
@@ -265,8 +268,9 @@ function endGame(){
     }
     isGameRunning = false;  
     clearInterval(ghostInterval);
-    document.getElementById('intro-screen').style.display = 'block';
-    document.getElementById('game-screen').style.display = 'none';
+    //document.getElementById('intro-screen').style.display = 'block';
+    //document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'block';
 }
 
 function updateScoreBoard(points){
@@ -287,6 +291,26 @@ function startNextLevel(){
     setTimeout(()=>{
         ghostInterval = setInterval(moveGhosts,ghostSpeed);
     },1000);
+}
+
+function saveScore(){
+    const playName = document.getElementById('player-name').value;
+    if(playName.trim() === ''){
+        alert("Anna nimesi!")
+        return;
+    }
+    db.collection("scores").add({
+        name: playName,
+        score: score,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    exitGame();
+}
+
+function exitGame(){
+    document.getElementById('intro-screen').style.display = 'block';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
 }
 
 class Player{
